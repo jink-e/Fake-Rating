@@ -1,0 +1,10 @@
+{
+  "_type": "prompt",
+  "input_variables": [
+    "product_name",
+    "product_features",
+    "num_reviews",
+    "headers"
+  ],
+  "template": "Write a review for a product named {product_name} which has the following features: {product_features}."
+}
