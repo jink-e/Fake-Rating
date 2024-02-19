@@ -1,10 +1,13 @@
 import gradio as gr
 import openai
 import pandas as pd
-from datetime import datetime
+import json
+from dotenv import load_dotenv, find_dotenv
+
+_ = load_dotenv(find_dotenv())
 
 # Replace 'YOUR_OPENAI_API_KEY' with your actual OpenAI API key
-openai.api_key = "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"
+# openai.api_key = "YOUR_OPENAI_API_KEY"
 
 
 def generate_reviews(product_name, product_features, num_reviews, csv_template):
@@ -19,35 +22,55 @@ def generate_reviews(product_name, product_features, num_reviews, csv_template):
     # Create an empty DataFrame to match the template headers
     reviews_df = pd.DataFrame(columns=headers)
 
-    for _ in range(num_reviews):
+    batch_size = 10
+    max_words = 50
+    loop_size = num_reviews
+
+    # 输出格式
+    output_format = f"""
+    以 JSON 格式输出
+    - Please reply with the CSV columns:  {','.join(headers)}.
+    - Output should be a plain JSON text without formatting.
+    - Each review should no more than {max_words} worlds
+    - No comments, and no extra words.
+    - Should contain a "data" key
+    """
+
+    # examples
+    examples = """
+    {"data": []}
+    """
+
+    for _ in range(0, num_reviews, batch_size):
+        # 稍微调整下咒语，加入输出格式
+        instruction = f"""
+        Write {min(loop_size, batch_size)} reviews for a product named {product_name} which has the following features: {product_features}.
+        """
+        prompt = f"""
+        {instruction}
+
+        {output_format}
+
+        for example:
+        {examples}
+        """
         # Call the OpenAI GPT model to generate review content
-        # response = openai.Completion.create(
-        #     engine="text-davinci-003",
-        #     prompt=f"Write a review for a product named {product_name} which has the following features: {product_features}",
-        #     max_tokens=50,
-        # )
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {
-                    "role": "user",
-                    "content": f"Write a review for a product named {product_name} which has the following features: {product_features}",
-                },
+                {"role": "system", "content": "You are a dropshipping expert."},
+                {"role": "user", "content": prompt},
             ],
-            max_tokens=50,
         )
+        loop_size -= batch_size
         review_body = response.choices[0].message.content.strip()
 
         # Create a new review entry
-        review_entry = {header: "" for header in headers}
-        review_entry["body"] = review_body
-        review_entry["rating"] = "5"  # Example default rating
-        review_entry["review_date"] = datetime.now().strftime("%Y-%m-%d")
+        reviews = json.loads(review_body)
+        review_entry = pd.json_normalize(reviews["data"])
 
-        # Append the new review entry to the DataFrame
-        # reviews_df = reviews_df.append(review_entry, ignore_index=True)
-        reviews_df = pd.concat([reviews_df, pd.DataFrame(review_entry, index=[0])])
+        # Append the new reviews array to the DataFrame
+        reviews_df = pd.concat([reviews_df, review_entry])
 
     # Convert to CSV
     csv_buffer = "export.csv"
