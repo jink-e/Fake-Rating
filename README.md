@@ -1,29 +1,29 @@
 # Fake-Rating
 
-## 介绍
+## Introduction
 
-一个使用 Python 编写的模拟用户对商品进行评分的程序。程序会模拟用户对商品进行评轮, 并根据上传的 csv 模版进行导出
+A program written in Python for simulating user ratings on products. The program simulates users rating products and exports the results based on the uploaded CSV template.
 
-## 安装
+## Installation
 
 ```bash
 # python 3.11
 pip install -r requirements.txt
 ```
 
-## 使用
+## Usage
 
 ```bash
 python main.py
 ```
 
-打开浏览器[http://127.0.0.1:7860](http://127.0.0.1:7860)
+Open your browser [http://127.0.0.1:7860](http://127.0.0.1:7860).
 
-根据提示进行操作
+Follow the prompts:
 
-- 输入产品名称 `Product Name`
-- 输入产品特点 `Product Features`
-- 输出需要生成的评论数量 `Number of Reviews to Generate`
-- 上传 csv 模版 `example_template.csv`
-- 点击 `submit` 开始生成评论
-- 导出评论下载为 `export.csv`
+- Enter the product name under `Product Name`.
+- Enter the product features under `Product Features`.
+- Specify the number of reviews to generate under `Number of Reviews to Generate`.
+- Upload the CSV template `example_template.csv`.
+- Click on `submit` to start generating reviews.
+- Download the exported reviews as `export.csv`.

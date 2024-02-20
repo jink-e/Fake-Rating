@@ -26,9 +26,8 @@ def generate_reviews(product_name, product_features, num_reviews, csv_template):
     max_words = 50
     loop_size = num_reviews
 
-    # 输出格式
     output_format = f"""
-    以 JSON 格式输出
+    Output as JSON
     - Please reply with the CSV columns:  {','.join(headers)}.
     - Output should be a plain JSON text without formatting.
     - Each review should no more than {max_words} worlds
@@ -75,7 +74,6 @@ def generate_reviews(product_name, product_features, num_reviews, csv_template):
     # Convert to CSV
     csv_buffer = "export.csv"
     reviews_df.to_csv(csv_buffer, index=False)
-    # csv_buffer.seek(0)
 
     return reviews_df, csv_buffer
 
