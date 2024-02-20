@@ -27,3 +27,7 @@ Follow the prompts:
 - Upload the CSV template `example_template.csv`.
 - Click on `submit` to start generating reviews.
 - Download the exported reviews as `export.csv`.
+
+## Demo
+
+![demo](demo.png)
