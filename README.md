@@ -14,6 +14,9 @@ pip install -r requirements.txt
 ## Usage
 
 ```bash
+cp .env.example .env
+# edit .env file with your own API Key
+# run
 python main.py
 ```
 
