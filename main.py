@@ -15,15 +15,24 @@ def generate_reviews(product_name, product_features, num_reviews, csv_template):
     if csv_template is None:
         return "Please upload a CSV template to continue.", None
 
-    # template_stream = io.StringIO(csv_template.decode("utf-8"))
-    template_df = pd.read_csv(csv_template)
-    headers = template_df.columns.tolist()
+    try:
+        template_df = pd.read_csv(csv_template.name, encoding="utf-8")
+        headers = template_df.columns.tolist()
+    except FileNotFoundError:
+        raise gr.Error("File not exist, please check the file path.")
+    except pd.errors.InvalidColumnName:
+        raise gr.Error("Column Name format is not correct, please check the name.")
+    except pd.errors.EmptyDataError:
+        raise gr.Error("Empty Data, please check the file content.")
+    except Exception as e:
+        raise gr.Error(f"Error: {e}")
 
     # Create an empty DataFrame to match the template headers
     reviews_df = pd.DataFrame(columns=headers)
 
     batch_size = 10
     max_words = 50
+    num_reviews = int(num_reviews)
     loop_size = num_reviews
 
     output_format = f"""
@@ -34,6 +43,7 @@ def generate_reviews(product_name, product_features, num_reviews, csv_template):
     - No comments, and no extra words.
     - Should contain a "data" key
     - Rating should be a int number between 1 and 5
+    - Country should be "United States of America"
     """
 
     # examples
@@ -90,7 +100,7 @@ iface = gr.Interface(
             label="Product Features", placeholder="Enter the product features here"
         ),
         gr.components.Number(label="Number of Reviews to Generate"),
-        gr.components.File(label="Upload CSV Template"),
+        gr.inputs.File(label="Upload CSV Template"),
     ],
     outputs=[
         gr.components.Dataframe(label="Generated Reviews", type="pandas"),
