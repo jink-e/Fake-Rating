@@ -33,6 +33,7 @@ def generate_reviews(product_name, product_features, num_reviews, csv_template):
     - Each review should no more than {max_words} worlds
     - No comments, and no extra words.
     - Should contain a "data" key
+    - Rating should be a int number between 1 and 5
     """
 
     # examples
