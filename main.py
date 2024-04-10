@@ -100,7 +100,7 @@ iface = gr.Interface(
             label="Product Features", placeholder="Enter the product features here"
         ),
         gr.components.Number(label="Number of Reviews to Generate"),
-        gr.inputs.File(label="Upload CSV Template"),
+        gr.components.File(label="Upload CSV Template"),
     ],
     outputs=[
         gr.components.Dataframe(label="Generated Reviews", type="pandas"),
